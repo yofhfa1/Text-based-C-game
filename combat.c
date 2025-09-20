@@ -1,0 +1,1 @@
+// Maybe write something like initCombat(int location) here
