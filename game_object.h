@@ -1,12 +1,23 @@
 // game.h
-#ifndef GAME_H
-#define GAME_H
-
 typedef struct {
     int level;
-    int score;
-    float player_x, player_y;
-    int health;
+    Champion champion[3];
+    int map[][];
 } Game;
 
-#endif
+typedef struct {
+    int allowSaveInCombat;
+    int difficulty;
+
+    int explorationTurn;
+    int combatChance;
+    int tradeChance;
+    int minigameChance;
+} Config;
+
+typedef struct {
+    int health;
+    int maxHealth;
+    int damage;
+
+} Champion
