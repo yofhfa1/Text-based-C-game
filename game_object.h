@@ -2,7 +2,9 @@
 typedef struct {
     int level;
     Champion champion[3];
-    int map[][];
+    int *map;
+    int initialized;
+    Config config;
 } Game;
 
 typedef struct {
