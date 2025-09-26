@@ -5,6 +5,7 @@
 #include <stdio.h>
 
 #define SAVE_DIRECTORY "./saves/"
+#define MAP_FILE "./map.json"
 int current_save;
 
 void initFileIO() {
@@ -25,4 +26,12 @@ void saveGame(Game * game, int autosave) {
 
 void loadGame(Game * game) {
     
+}
+
+void saveMap(Game * game) {
+    
+}
+
+void loadMap(Game * game) {
+   
 }

@@ -24,6 +24,7 @@ void showMainMenu(Game * game) {
             printf("5. Load game");
             printf("6. Exit");
             choice = scanf("%d", &choice);
+            getchar();
 
             switch (choice)
             {
@@ -45,12 +46,15 @@ void showMainMenu(Game * game) {
                     break;
                 case 6:
                     return;
+                default:
+                    printf("Please input a number in range of 1-6");
             }
         } else {
             printf("1. New game");
             printf("2. Load game");
             printf("3. Exit");
             choice = scanf("%d", &choice);
+            getchar();
 
             switch (choice)
             {
@@ -64,6 +68,8 @@ void showMainMenu(Game * game) {
                     break;
                 case 3:
                     return;
+                default:
+                    printf("Please input a number in range of 1-3");
             }
         }
 
