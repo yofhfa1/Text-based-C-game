@@ -39,11 +39,11 @@ int explorer(Game* game) {
         }
         if (i < steps) {
             printf("\nPress Enter to continue exploring...");
-            getchar(); getchar();
+            getchar();
         }
     }
     printf("\nExploration complete! Returning to main menu.\n");
     printf("Press Enter...");
-    getchar(); getchar();
+    getchar();
     return 0;
 }
