@@ -77,36 +77,3 @@ void handleChestEvent(Game* game) {
             break;
     }
 }
-void handleMerchantQuest(Game* game) {
-    printf("A distressed merchant approaches you!\n");
-    printf("'Bandits attacked my caravan and stole my goods!'\n");
-    printf("'Can you retrieve them? They're hiding nearby...'\n");
-    printf("\n1. Accept quest\n");
-    printf("2. Decline\n");
-    printf("Choice: ");
-    int questChoice;
-    scanf("%d", &questChoice);
-    if (questChoice == 1) {
-        printf("\nQuest accepted!\n");
-        printf("You search for the stolen goods...\n")
-        int questOutcome = rand() % 100;
-        if (questOutcome < 70) {
-            printf("\nYou find the bandits guarding the stolen goods!\n");
-            printf("They won't give up without a fight!\n");
-            createcombat(game);
-            printf("\nThe bandits are defeated!\n");
-            printf("You retrieve the merchant's goods.\n");
-            printf("\nThe merchant rewards you generously:\n");
-            printf("+ 100 gold\n");
-            printf("+ Special item\n");
-        } else {
-            printf("\nYou find the stolen goods abandoned in a clearing!\n");
-            printf("The bandits must have fled.\n");
-            printf("\nThe merchant rewards you:\n");
-            printf("+ 75 gold\n");
-        }
-    } else {
-        printf("You decline the quest.\n");
-        printf("The merchant looks disappointed and walks away...\n");
-    }
-}

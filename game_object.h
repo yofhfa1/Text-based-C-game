@@ -32,10 +32,8 @@ typedef struct {
     int difficulty;
 
     int explorationTurn;
-    int combatChance;
-    int tradeChance;
-    int minigameChance;
-
+    //first element is combat chance, second element is trade chance, 3rd is minigameChance
+    int scenarioWeights[3];
     int maxTimeOfTheDay;
 } Config;
 
