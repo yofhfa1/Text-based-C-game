@@ -77,10 +77,7 @@ void handleChest(Game* game) {
                     int goldMax = game->config.chestGoldMax;
                     int goldFound = goldMin + rand() % (goldMax - goldMin + 1);
                     printf("Lockpicked successfully!\n");
-                    printf("You find %d gold inside!\n", goldFound);
-                    for (int i = 0; i < 3; i++) {
-                        game->champion[i].gold += goldFound;
-                    }
+                    printf("You find %d gold inside!\n", goldFound);game->gold += goldFound;
                     if (rand() % 100 < game->config.chestItemChance) {
                         printf("You also find a special item!\n");
                     }
@@ -99,10 +96,7 @@ void handleChest(Game* game) {
                             int goldMax = game->config.chestGoldMax;
                             int goldFound = (goldMin + rand() % (goldMax - goldMin + 1)) / 2;
                             printf("You force the chest open!\n");
-                            printf("Some contents are damaged, but you recover %d gold.\n", goldFound);
-                            for (int i = 0; i < 3; i++) {
-                                game->champion[i].gold += goldFound;
-                            }
+                        printf("Some contents are damaged, but you recover %d gold.\n", goldFound); game->gold += goldFound;
                             return;               
                         } else if (retryChoice == 2) {
                             printf("You leave the chest alone.\n");
@@ -120,10 +114,7 @@ void handleChest(Game* game) {
                 int goldMax = game->config.chestGoldMax;
                 int goldFound = (goldMin + rand() % (goldMax - goldMin + 1)) / 2;
                 printf("You force the chest open!\n");
-                printf("Some contents are damaged, but you recover %d gold.\n", goldFound);   
-                for (int i = 0; i < 3; i++) {
-                    game->champion[i].gold += goldFound;
-                }
+                printf("Some contents are damaged, but you recover %d gold.\n", goldFound); game->gold += goldFound;
                 return;
             }
             case 3:

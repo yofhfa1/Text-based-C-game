@@ -19,7 +19,11 @@ int explorer(Game* game) {
     printf("\n=== EXPLORATION ===\n");
     printf("Exploring the area...\n");
     int steps = game->config.explorationTurn;
-    int* weights = game->config.scenarioWeights;
+    int weights[3] = {
+        game->config.scenarioWeights[0],
+        game->config.scenarioWeights[1],
+        game->config.scenarioWeights[2]
+    };
     for (int i = 1; i <= steps; i++) {
         printf("\n--- Exploration Step %d/%d ---\n", i, steps);
         int scenario = getWeightedScenario(weights, 3);
@@ -36,7 +40,7 @@ int explorer(Game* game) {
                 printf("*** SIDE EVENT ***\n");
                 handleSideEvent(game);
                 break;
-        }        
+        }
         if (i < steps) {
             printf("\nPress any key to continue...");
             getchar();

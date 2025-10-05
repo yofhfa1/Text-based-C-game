@@ -10,13 +10,17 @@ typedef struct {
 void createcombat(Game* game) {
     printf("\n=== COMBAT START ===\n");
     int location = game->level;
-    int numEnemies = 1 + (location / 3); //enemies based on us to determand their level 
+    int numEnemies = game->config.baseEnemyCount + (location * game->config.enemyScalePerLevel);
     if (numEnemies > 4) numEnemies = 4;
     Enemy enemies[4];
     for (int i = 0; i < numEnemies; i++) {
-        enemies[i].maxHealth = 30 + (location * 10);
+        int baseHealth = game->config.enemyBaseHealth;
+        int baseDamage = game->config.enemyBaseDamage;
+        float locationMultiplier = 1.0f + (game->config.difficultyMultiplier * location);
+        
+        enemies[i].maxHealth = baseHealth * locationMultiplier;
         enemies[i].health = enemies[i].maxHealth;
-        enemies[i].damage = 5 + (location * 2);
+        enemies[i].damage = baseDamage * locationMultiplier;
         sprintf(enemies[i].name, "Enemy %d", i + 1);
     }
     printf("Facing %d enemies at level %d!\n", numEnemies, location);
