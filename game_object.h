@@ -23,6 +23,7 @@ typedef struct {
 
 void init(LinkedList list);
 void insert(LinkedList list, void *pt);
+*Node getElementAt(LinkedList list, int index);
 void removeAt(LinkedList list, int index);
 void freeList(LinkedList list);
 

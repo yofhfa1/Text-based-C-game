@@ -20,12 +20,26 @@ void insert(LinkedList list, void *pt) {
     }
 }
 
+*Node getElementAt(LinkedList list, index) {
+    int i = 0;
+    Node *curent = list.head;
+
+    if (list.head == NULL) return;
+    while (i != index && current != NULL) {
+        current = current.next;
+        i++;
+    }
+    //Either null or something
+    return current;
+}
+
 void removeAt(LinkedList list, int index) {
     int i = 0;
     Node *current = list.head;
     Node *prevNode = NULL;
 
-    if (index = 0 && list.head) {
+    if (list.head == NULL) return;
+    if (index == 0) {
         prevNode = list.head;
         list.head = list.head->next;
         free(prevNode);
