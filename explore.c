@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <time.h>
 #include "game_object.h"
 int getWeightedScenario(int weights[], int size) {
     int total = 0;
@@ -19,14 +18,9 @@ int explorer(Game* game) {
     printf("\n=== EXPLORATION ===\n");
     printf("Exploring the area...\n");
     int steps = game->config.explorationTurn;
-    int weights[3] = {
-        game->config.scenarioWeights[0],
-        game->config.scenarioWeights[1],
-        game->config.scenarioWeights[2]
-    };
-    for (int i = 1; i <= steps; i++) {
+    for (int i = 1; i <= game->config.explorationTurn; i++) {
         printf("\n--- Exploration Step %d/%d ---\n", i, steps);
-        int scenario = getWeightedScenario(weights, 3);
+        int scenario = getWeightedScenario(game->config.scenarioWeights, 3);
         switch (scenario) {
             case 0:
                 printf("*** COMBAT ENCOUNTER ***\n");
