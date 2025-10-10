@@ -11,9 +11,9 @@ typedef struct {
     Config config;
 } Game;
 
-typedef struct node {
+typedef struct node_t {
     void *value;
-    struct node *next;
+    struct node_t *next;
 } Node;
 
 typedef struct {

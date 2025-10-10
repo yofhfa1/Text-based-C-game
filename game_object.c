@@ -20,7 +20,7 @@ void insert(LinkedList list, void *pt) {
     }
 }
 
-*Node getElementAt(LinkedList list, index) {
+*Node getElementAt(LinkedList list, int index) {
     int i = 0;
     Node *curent = list.head;
 

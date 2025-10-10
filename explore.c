@@ -14,6 +14,7 @@ int getWeightedScenario(int weights[], int size) {
     }
     return size - 1;
 }
+
 int explorer(Game* game) {
     printf("\n=== EXPLORATION ===\n");
     printf("Exploring the area...\n");

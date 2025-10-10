@@ -26,7 +26,7 @@ void saveGame(Game * game, char * filename) {
     cJSON_AddNumberToObject(root, "level", game->level);
     cJSON_AddNumberToObject(root, "day", game->day);
     cJSON_AddNumberToObject(root, "timeOfTheDay", game->timeOfTheDay);
-    cJSON *champion = cJSON_AddArrayToObject(root, "champion");
+    cJSON *champion = cJSON_AddArrayToObject(root, "champions");
     int i;
     for (i = 0; i < 3;i++) {
         cJSON *temp = cJSON_CreateObject();
@@ -63,7 +63,41 @@ void loadGame(Game * game, char * filename) {
     cJSON *root = cJSON_Parse(buffer);
     if (!root) { free(buffer); return 0; }
     
-    
+    cJSON *temp = cJSON_GetObjectItem(root, "level");
+    if (cJSON_IsNumber(temp)) {
+        game->level = temp->valueint;
+    }
+    temp = cJSON_GetObjectItem(root, "day");
+    if (cJSON_IsNumber(temp)) {
+        game->day = temp->valueint;
+    }
+    temp = cJSON_GetObjectItem(root, "timeOfTheDay");
+    if (cJSON_IsNumber(temp)) {
+        game->timeOfTheDay = temp->valueint;
+    }
+    cJSON *champions = cJSON_GetObjectItem(root, "champions");
+    cJSON *item = NULL;
+    for (int i = 0;i < 3;i ++) {
+        item = cJSON_GetArrayItem(champions, i);
+        temp = cJSON_GetObjectItem(item, "health");
+        if (cJSON_IsNumber(temp)) {
+            game->champion[i].health = temp->valueint;
+        }
+        temp = cJSON_GetObjectItem(item, "maxHealth");
+        if (cJSON_IsNumber(temp)) {
+            game->champion[i].maxHealth = temp->valueint;
+        }
+        temp = cJSON_GetObjectItem(item, "damage");
+        if (cJSON_IsNumber(temp)) {
+            game->champion[i].damage = temp->valueint;
+        }
+    }
+
+    free(root);
+    // temp = cJSON_GetObjectItem(root, "timeOfTheDay");
+    // if (cJSON_IsNumber(temp)) {
+    //     game->timeOfTheDay = temp->valueint;
+    // }
 }
 
 void saveMap(Game * game) {
