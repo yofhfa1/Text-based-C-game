@@ -6,6 +6,7 @@
 void init(LinkedList list) {
     list.head = NULL;
     list.tail = NULL;
+    list.size = 0;
 }
 
 void insert(LinkedList list, void *pt) {
@@ -18,6 +19,7 @@ void insert(LinkedList list, void *pt) {
         list.tail->next = node;
         list.tail = node;
     }
+    list.size++;
 }
 
 *Node getElementAt(LinkedList list, int index) {
@@ -43,6 +45,7 @@ void removeAt(LinkedList list, int index) {
         prevNode = list.head;
         list.head = list.head->next;
         free(prevNode);
+        size--;
         return;
     }
     while (i != index && current != list.tail) {
@@ -53,6 +56,7 @@ void removeAt(LinkedList list, int index) {
     if (i == index) {
         prevNode->next = current->next;
         free(current);
+        size--;
     }
 }
 

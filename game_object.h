@@ -9,6 +9,7 @@ typedef struct {
     // Implement map using adjacentMatrix;
     int initialized;
     Config config;
+    Shop shop;
 } Game;
 
 typedef struct node_t {
@@ -19,6 +20,7 @@ typedef struct node_t {
 typedef struct {
     Node *head;
     Node *tail;
+    int size;
 } LinkedList;
 
 void init(LinkedList list);
@@ -35,6 +37,8 @@ typedef struct {
     //first element is combat chance, second element is trade chance, third is minigameChance
     int scenarioWeights[3];
     int maxTimeOfTheDay;
+
+    double sellValue;
 } Config;
 
 enum ItemType {
@@ -45,7 +49,7 @@ enum ItemType {
 
 typedef struct {
     enum ItemType type;
-    char *name;
+    char name[50];
     int value;
     int effectValue;
 } Item;
