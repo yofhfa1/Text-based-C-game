@@ -8,6 +8,8 @@ void showMainMenu(Game * game);
 
 int main() {
     Game game;
+    game.map = malloc(sizeof(int) * game.mapSize * game.mapSize);
+    game.locationData = malloc(sizeof(LocationData) * game.mapSize);
     game.initialized = 0;
     showMainMenu(&game);
 }

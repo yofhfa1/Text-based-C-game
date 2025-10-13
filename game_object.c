@@ -22,31 +22,30 @@ void insert(LinkedList list, void *pt) {
     list.size++;
 }
 
-*Node getElementAt(LinkedList list, int index) {
+Node* getElementAt(LinkedList list, int index) {
     int i = 0;
-    Node *curent = list.head;
+    Node *current = list.head;
 
     if (list.head == NULL) return;
     while (i != index && current != NULL) {
-        current = current.next;
+        current = current->next;
         i++;
     }
     //Either null or something
     return current;
 }
 
-void removeAt(LinkedList list, int index) {
+Node* removeAt(LinkedList list, int index) {
     int i = 0;
     Node *current = list.head;
     Node *prevNode = NULL;
 
-    if (list.head == NULL) return;
+    if (list.head == NULL) return NULL;
     if (index == 0) {
         prevNode = list.head;
         list.head = list.head->next;
-        free(prevNode);
-        size--;
-        return;
+        list.size--;
+        return prevNode;
     }
     while (i != index && current != list.tail) {
         prevNode = current;
@@ -55,9 +54,10 @@ void removeAt(LinkedList list, int index) {
     }
     if (i == index) {
         prevNode->next = current->next;
-        free(current);
-        size--;
+        list.size--;
+        return current;
     }
+    return NULL;
 }
 
 void freeList(LinkedList list) {
@@ -70,4 +70,25 @@ void freeList(LinkedList list) {
         free(node);
     }
     free(prevNode);
+}
+
+// Method to find the index'th true value in a binary map
+// Return -1 if an error was found
+int findBinaryMapping(int binaryMap[], int index, int length) {
+    int i = 0;
+    for (;i < length && index > 0;i++) {
+        if (binaryMap[i] >= 1) index--;
+    }
+    if (index == 0) {
+        return i;
+    }
+    return -1;
+}
+
+//TODO: this can overflow
+void addTimeOfTheDay(Game *game, int value) {
+    if (game->timeOfTheDay + value > game->config.maxTimeOfTheDay) {
+        game->timeOfTheDay = game->timeOfTheDay + value - game->config.maxTimeOfTheDay;
+        game->day++;
+    }
 }
