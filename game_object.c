@@ -87,8 +87,31 @@ int findBinaryMapping(int binaryMap[], int index, int length) {
 
 //TODO: this can overflow
 void addTimeOfTheDay(Game *game, int value) {
-    if (game->timeOfTheDay + value > game->config.maxTimeOfTheDay) {
-        game->timeOfTheDay = game->timeOfTheDay + value - game->config.maxTimeOfTheDay;
+    game->timeOfTheDay += value;
+    if (game->timeOfTheDay > game->config.maxTimeOfTheDay) {
+        game->timeOfTheDay -= game->config.maxTimeOfTheDay;
         game->day++;
+    }
+}
+
+void printClassName(int class) {
+    switch (class) {
+        case WIZARD:
+            printf("Wizard");
+            break;
+        case KNIGHT:
+            printf("Knight");
+            break;
+        case PALADIN:
+            printf("Paladin");
+            break;
+        case ROGUE:
+            printf("Rogue");
+            break;
+        case ELF:
+            printf("ELF");
+            break;
+        default:
+            printf("No role/Error");
     }
 }

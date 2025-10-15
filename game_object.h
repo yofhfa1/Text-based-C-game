@@ -35,10 +35,13 @@ void freeList(LinkedList list);
 // Return -1 if an error was found
 Node* findBinaryMapping(int binaryMap[], int index, int length);
 void addTimeOfTheDay(Game * game, int value);
+void printClassName(int class);
 
 typedef struct {
     int allowSaveInCombat;
     int difficulty;
+    int baseLvUpXp;
+    int lvUpXpMul;
 
     int explorationTurn;
     //first element is combat chance, second element is trade chance, third is minigameChance
@@ -71,17 +74,29 @@ typedef struct {
     LinkedList itemList;
 } Shop;
 
+#define FOREACH_CHAMPION(CHAMPION) \
+        CHAMPION(WIZARD)   \
+        CHAMPION(KNIGHT)   \
+        CHAMPION(PALADIN)   \
+        CHAMPION(ROGUE)   \
+        CHAMPION(ELF)   \
+
+#define GENERATE_ENUM(ENUM) ENUM,
+#define GENERATE_STRING(STRING) #STRING,
+
 enum Class {
-    WIZARD,
-    KNIGHT,
-    PALADIN,
-    ROGUE,
-    ELF
+    FOREACH_CHAMPION(GENERATE_ENUM)
+};
+
+static const char *champion_string[] = {
+    FOREACH_CHAMPION(GENERATE_STRING)
 };
 
 typedef struct {
     int health;
     int maxHealth;
+    int level;
+    int xp;
     int damage;
     enum Class class;
 } Champion;
