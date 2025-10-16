@@ -93,25 +93,3 @@ void addTimeOfTheDay(Game *game, int value) {
         game->day++;
     }
 }
-
-void printClassName(int class) {
-    switch (class) {
-        case WIZARD:
-            printf("Wizard");
-            break;
-        case KNIGHT:
-            printf("Knight");
-            break;
-        case PALADIN:
-            printf("Paladin");
-            break;
-        case ROGUE:
-            printf("Rogue");
-            break;
-        case ELF:
-            printf("ELF");
-            break;
-        default:
-            printf("No role/Error");
-    }
-}

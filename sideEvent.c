@@ -1,6 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "game_object.h"
+#include "character.c"
+
+void handleTrap(Game * game);
+void handleChest(Game * game);
+
 void handleSideEvent(Game* game) {
     int eventType = rand() % 2;
     if (eventType == 0) {
@@ -9,6 +14,7 @@ void handleSideEvent(Game* game) {
         handleChest(game);
     }
 }
+
 void handleTrap(Game* game) {
     int trapChoice;
     while (1) {
@@ -25,7 +31,7 @@ void handleTrap(Game* game) {
                     printf("You gain %d EXP for your skill.\n", game->config.trapDisarmExp);
                     for (int i = 0; i < 3; i++) {
                         if (game->champion[i].health > 0) {
-                            game->champion[i].xp += game->config.trapDisarmExp;
+                            addXp(game, game->config.trapDisarmExp);
                         }
                     }
                 } else {
@@ -78,7 +84,7 @@ void handleChest(Game* game) {
                     int goldFound = goldMin + rand() % (goldMax - goldMin + 1);
                     printf("Lockpicked successfully!\n");
                     printf("You find %d gold inside!\n", goldFound);
-                    game->golde += goldFound;
+                    game->gold += goldFound;
                     if (rand() % 100 < game->config.chestItemChance) {
                         printf("You also find a special item!\n");
                     }

@@ -1,4 +1,11 @@
+#pragma once
+
 #include "game_object.h"
+
+int printAndCountFormation(Game * game);
+void addChampion(Game * game, int championAmount);
+void removeChampion(Game * game, int championAmount);
+void changeChampion(Game * game, int championAmount);
 
 void editFormation(Game * game) {
     int choice;
@@ -17,7 +24,8 @@ void editFormation(Game * game) {
             binaryArray[2] = 1;
         }
         printf("Exit.");
-        printf("Your choice: ", &choice);
+        printf("Your choice: ");
+        scanf("%d", &choice);
         findBinaryMapping(binaryArray, choice-1, 4);
         switch (choice) {
         case 0:
@@ -66,8 +74,8 @@ void removeChampion(Game * game, int championAmount) {
     while (1) {
         printf("Select champion you want to remove");
         for (int i = 0;i < championAmount;i++) {
-            printf("%d. %s lv: %d, xp: %d\n", i+1, game->champion[i].level,
-                game->champion[i].xp);
+            printf("%d. %s lv: %d, xp: %d\n", i+1, champion_string[game[i].champion->class],
+                game->champion[i].level, game->champion[i].xp);
         }
         printf("%d. Quit\n", championAmount);
         printf("Your choice: ");
@@ -90,7 +98,7 @@ void removeChampion(Game * game, int championAmount) {
     }
 }
 
-void editChampion(Game * game, int championAmount) {
+void changeChampion(Game * game, int championAmount) {
     while (1) {
         printf("Select champion you want to change");
         for (int i = 0;i < championAmount;i++) {
@@ -138,9 +146,9 @@ void addXp(Game * game, int xp) {
         if (game->champion[i].maxHealth > 0) {
             game->champion[i].xp += xp;
             if (game->champion[i].xp > game->config.baseLvUpXp *
-                game->champion[i].lv * game->config.lvUpXpMul) {
+                game->champion[i].level * game->config.lvUpXpMul) {
                 game->champion[i].xp -= game->config.baseLvUpXp *
-                    game->champion[i].lv * game->config.lvUpXpMul;
+                    game->champion[i].level * game->config.lvUpXpMul;
             }
         }
     }
@@ -156,9 +164,8 @@ int printAndCountFormation(Game * game) {
             printf("Champion %d:\n", i+1);
             printf("Level: %d\n", champion.level);
             printf("Current health: %d/%d\n", champion.health, champion.maxHealth);
-            printf("Damage: %d", champion.damage);
-            printf("Class: ");
-            printClassName(champion.class);
+            printf("Damage: %d\n", champion.damage);
+            printf("Class: %s\n", champion_string[champion.class]);
             printf("\n");
         }
     }

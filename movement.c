@@ -9,7 +9,7 @@ void move(Game * game) {
         int counter = 0;
         for (int i = 0;i < game->mapSize;i++) {
             // Node is connected to each other
-            if ((pt + i) == 1) {
+            if (*(pt + i) == 1) {
                 printf("%d. %s\n", ++counter, ((LocationData *) game->locationData)->name);
             }
         }
@@ -45,7 +45,7 @@ void teleport(Game * game, int dest) {
 
         for (int i = 0;i < game->mapSize;i++) {
             // Node is connected to each other
-            if ((pt + i) == 1) {
+            if (*(pt + i) == 1) {
                 if (i == dest) {
                     game->level = dest;
                     addTimeOfTheDay(game, game->config.teleportPenalty + stepCounter);

@@ -1,19 +1,6 @@
 // game.h
-typedef struct {
-    int level;
-    int day;
-    int timeOfTheDay;
-    int gold;
-    LinkedList itemList;    
-    Champion champion[3];
-    // Implement map using adjacentMatrix;
-    int *map;
-    LocationData *locationData;
-    int mapSize;
-    int initialized;
-    Config config;
-    Shop shop;
-} Game;
+#ifndef GAME_OBJECT
+#define GAME_OBJECT 1
 
 typedef struct node_t {
     void *value;
@@ -25,54 +12,6 @@ typedef struct {
     Node *tail;
     int size;
 } LinkedList;
-
-void init(LinkedList list);
-void insert(LinkedList list, void *pt);
-Node* getElementAt(LinkedList list, int index);
-Node* removeAt(LinkedList list, int index);
-void freeList(LinkedList list);
-// Method to find the index'th true value in a binary map
-// Return -1 if an error was found
-Node* findBinaryMapping(int binaryMap[], int index, int length);
-void addTimeOfTheDay(Game * game, int value);
-void printClassName(int class);
-
-typedef struct {
-    int allowSaveInCombat;
-    int difficulty;
-    int baseLvUpXp;
-    int lvUpXpMul;
-
-    int explorationTurn;
-    //first element is combat chance, second element is trade chance, third is minigameChance
-    int scenarioWeights[3];
-    int maxTimeOfTheDay;
-    int teleportPenalty;
-
-    double sellValue;
-} Config;
-
-enum ItemType {
-    WEAPON,
-    HEALTH_POTION,
-    SPECIAL
-};
-
-typedef struct {
-    char name[50];
-    LinkedList monsterList;
-} LocationData;
-
-typedef struct {
-    enum ItemType type;
-    char name[50];
-    int value;
-    int effectValue;
-} Item;
-
-typedef struct {
-    LinkedList itemList;
-} Shop;
 
 #define FOREACH_CHAMPION(CHAMPION) \
         CHAMPION(WIZARD)   \
@@ -107,3 +46,75 @@ typedef struct {
     int damage;
     char name[30];
 } Monster;
+
+enum ItemType {
+    WEAPON,
+    HEALTH_POTION,
+    SPECIAL
+};
+
+typedef struct {
+    char name[50];
+    LinkedList monsterList;
+} LocationData;
+
+typedef struct {
+    enum ItemType type;
+    char name[50];
+    int value;
+    int effectValue;
+} Item;
+
+typedef struct {
+    LinkedList itemList;
+} Shop;
+
+typedef struct {
+    int allowSaveInCombat;
+    int difficulty;
+    int baseLvUpXp;
+    int lvUpXpMul;
+    int chestGoldMin;
+    int chestGoldMax;
+    int chestItemChance;
+    int lockpickChance;
+    int trapDisarmChance;
+    int trapDisarmExp;
+    int trapDamage;
+
+    int explorationTurn;
+    //first element is combat chance, second element is trade chance, third is minigameChance
+    int scenarioWeights[3];
+    int maxTimeOfTheDay;
+    int teleportPenalty;
+
+    double sellValue;
+} Config;
+
+typedef struct {
+    int level;
+    int day;
+    int timeOfTheDay;
+    int gold;
+    LinkedList itemList;    
+    Champion champion[3];
+    // Implement map using adjacentMatrix;
+    int *map;
+    LocationData *locationData;
+    int mapSize;
+    int initialized;
+    Config config;
+    Shop shop;
+} Game;
+
+void init(LinkedList list);
+void insert(LinkedList list, void *pt);
+Node* getElementAt(LinkedList list, int index);
+Node* removeAt(LinkedList list, int index);
+void freeList(LinkedList list);
+// Method to find the index'th true value in a binary map
+// Return -1 if an error was found
+int findBinaryMapping(int binaryMap[], int index, int length);
+void addTimeOfTheDay(Game * game, int value);
+
+#endif

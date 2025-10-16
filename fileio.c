@@ -1,9 +1,14 @@
-#include "lib/cJson/cJSON.h"
+#pragma once
+
 #include <sys/stat.h>
 #include "game_object.h"
 #include <unistd.h>
 #include <fcntl.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#include <cJSON.h>
 
 #define SAVE_DIRECTORY "./saves/"
 #define MAP_FILE "./map.json"
@@ -16,7 +21,7 @@ void initFileIO() {
 // Make multithreading for this later
 void saveGame(Game * game, char * filename) {
     char temp[50];
-    sprintf(temp, "%s%s%n", SAVE_DIRECTORY, autosave?"autosave_":"", current_save);
+    sprintf(temp, "%s%s%d\n", SAVE_DIRECTORY, /*autosave*/1?"autosave_":"", current_save);
     int fpointer = open(temp, O_WRONLY);
     if (fpointer == -1) {
         printf("error");
@@ -58,10 +63,12 @@ void loadGame(Game * game, char * filename) {
 
     char buffer[st.st_size];
     size_t size = read(fd, buffer, st.st_size);
+    if (size < st.st_size) {
+        printf("Read fail! Please try another file");
+    }
     close(fd);
 
     cJSON *root = cJSON_Parse(buffer);
-    if (!root) { free(buffer); return 0; }
     
     cJSON *temp = cJSON_GetObjectItem(root, "level");
     if (cJSON_IsNumber(temp)) {
@@ -104,6 +111,12 @@ void saveMap(Game * game) {
     
 }
 
-void loadMap(Game * game) {
+void loadMapAndLocationData(Game * game) {
    
 }
+
+void loadConfig(Game * game) {
+    // If config file not found init config
+}
+
+void loadShop(Game * game) {}

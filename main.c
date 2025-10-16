@@ -3,14 +3,16 @@
 #include "explore.c"
 #include "combat.c"
 #include "game_object.h"
+#include "character.c"
+#include "cJSON.h"
 
 void showMainMenu(Game * game);
 
 int main() {
     Game game;
-    game.map = malloc(sizeof(int) * game.mapSize * game.mapSize);
-    game.locationData = malloc(sizeof(LocationData) * game.mapSize);
-    game.initialized = 0;
+    // game.map = malloc(sizeof(int) * game.mapSize * game.mapSize);
+    // game.locationData = malloc(sizeof(LocationData) * game.mapSize);
+    // game.initialized = 0;
     showMainMenu(&game);
 }
 
@@ -39,13 +41,16 @@ void showMainMenu(Game * game) {
                     saveGame(game, 0);
                     break;
                 case 3:
-                    viewStats(game);
+                    // viewStats(game);
+                    printAndCountFormation(game);
                     break;
                 case 4:
                     initGame(game);
+                    doGameTick(game);
                     break;
                 case 5:
-                    loadGame(game);
+                    loadGame(game, "");
+                    doGameTick(game);
                     break;
                 case 6:
                     return;
@@ -66,7 +71,7 @@ void showMainMenu(Game * game) {
                     doGameTick(game);
                     break;
                 case 2:
-                    loadGame(game);
+                    loadGame(game, "");
                     doGameTick(game);
                     break;
                 case 3:

@@ -1,3 +1,5 @@
+#pragma once
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -7,7 +9,7 @@
 void showShop(Game *game) {
     printf("\n======== SHOP ========\n");
     int i = 0;
-    Item *item = (* Item) game->shop.itemList.head;
+    Item *item = (Item *) game->shop.itemList.head;
     while (item != NULL) {
         printf("%d. %s - %d Gold\n", i + 1, item->name, item->value);
         i++;
@@ -22,10 +24,10 @@ void showInventory(Game *game) {
     if (game->itemList.size == 0) {
         printf("Ban chua co do nao.\n");
     } else {
-        Item *item = (* Item) game->itemList.head;
+        Item *item = (Item *) game->itemList.head;
 
         while (item != NULL) {
-            printf("%d. %s - Ban duoc %d Gold\n", i + 1, item->name, item->value * game->config.sellValue);
+            printf("%d. %s - Ban duoc %d Gold\n", i + 1, item->name, (int) (item->value * game->config.sellValue));
         }
         i++;
     }
@@ -48,7 +50,7 @@ void buyItem(Game *game) {
             continue;
         }
 
-        Item *it = getElementAt(game->shop.itemList, choice-1);
+        Item *it = (Item *) getElementAt(game->shop.itemList, choice-1)->value;
         if (game->gold >= it->value) {
             game->gold -= it->value;
             Item *newItem = malloc(sizeof(Item));
@@ -78,7 +80,7 @@ void sellItem(Game *game) {
             continue;
         }
 
-        Item *it = getElementAt(game->itemList, choice - 1);
+        Item *it = (Item *) getElementAt(game->itemList, choice - 1)->value;
         int goldEarned = it->value * game->config.sellValue;
         game->gold += goldEarned;
         
@@ -89,7 +91,7 @@ void sellItem(Game *game) {
 }
 
 // Show shop interface
-void openShop(Game *game) {
+void openShop(Game * game) {
     int choice;
     while (1) {
         printf("\n======= SHOP MENU =======\n");

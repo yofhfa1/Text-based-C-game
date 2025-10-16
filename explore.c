@@ -1,6 +1,11 @@
+#pragma once
+
 #include <stdio.h>
 #include <stdlib.h>
 #include "game_object.h"
+#include "combat.c"
+#include "shop.c"
+
 int getWeightedScenario(int weights[], int size) {
     int total = 0;
     for (int i = 0; i < size; i++) {
@@ -15,17 +20,16 @@ int getWeightedScenario(int weights[], int size) {
     return size - 1;
 }
 
-int explorer(Game* game) {
+int explore(Game* game) {
     printf("\n=== EXPLORATION ===\n");
     printf("Exploring the area...\n");
-    int steps = game->config.explorationTurn;
     for (int i = 1; i <= game->config.explorationTurn; i++) {
-        printf("\n--- Exploration Step %d/%d ---\n", i, steps);
+        printf("\n--- Exploration Step %d/%d ---\n", i, game->config.explorationTurn);
         int scenario = getWeightedScenario(game->config.scenarioWeights, 3);
         switch (scenario) {
             case 0:
                 printf("*** COMBAT ENCOUNTER ***\n");
-                createcombat(game);
+                createCombat(game);
                 break;
             case 1:
                 printf("*** MERCHANT ENCOUNTER ***\n");
@@ -36,7 +40,7 @@ int explorer(Game* game) {
                 handleSideEvent(game);
                 break;
         }
-        if (i < steps) {
+        if (i < game->config.explorationTurn) {
             printf("\nPress any key to continue...");
             getchar();
         }
