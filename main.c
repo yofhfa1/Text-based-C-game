@@ -8,6 +8,7 @@ void showMainMenu(Game * game);
 
 int main() {
     Game game;
+    game.initialized = 0;
     showMainMenu(&game);
 }
 

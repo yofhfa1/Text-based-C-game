@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include "game_object.h"
 
 void doTraining(Game * game) {
 	int choice;
