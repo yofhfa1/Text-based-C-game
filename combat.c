@@ -1,13 +1,16 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 #include "game_object.h"
 extern void useItem(Game *game);
-extern void useSkill(Champion *c, Game *game, Monster enemies[], int enemyCount);
+extern void addXp(Game *game, int xp);
 void printCombatStatus(Game *game, Monster enemies[], int enemyCount);
 int selectTarget(Monster enemies[], int enemyCount);
 void showMonsterStats(Monster *m, int index);
 void viewStatsMenu(Game *game, Monster enemies[], int enemyCount);
+void useSkill(Champion *c, Game *game, Monster enemies[], int enemyCount);
+void useSkill(Champion *c, Game *game, Monster enemies[], int enemyCount) {
 void initCombat(Game *game) {
     printf("\n=== COMBAT START ===\n");
     LinkedList *monsterList = (LinkedList *)(game->mapMonsterList + game->level * sizeof(LinkedList));
@@ -20,21 +23,30 @@ void initCombat(Game *game) {
     if (fightCount > totalMonsters) fightCount = totalMonsters;
     Monster localEnemies[fightCount];
     int enemyCount = 0;
-
-    Node *current = monsterList->head;
-    while (current != NULL && enemyCount < fightCount) {
-        Monster *m = (Monster *)current->value;
-        localEnemies[enemyCount].health = m->health;
-        localEnemies[enemyCount].maxHealth = m->maxHealth;
-        localEnemies[enemyCount].damage = m->damage;
-        strcpy(localEnemies[enemyCount].name, m->name);
-        enemyCount++;
-        current = current->next;
+    int selected[totalMonsters];
+    for (int i = 0; i < totalMonsters; i++) selected[i] = 0;
+    srand(time(NULL));
+    while (enemyCount < fightCount) {
+        int randIndex = rand() % totalMonsters;
+        if (selected[randIndex] == 0) {
+            selected[randIndex] = 1;
+            Node *current = monsterList->head;
+            for (int i = 0; i < randIndex; i++) {
+                current = current->next;
+            }
+            Monster *m = (Monster *)current->value;
+            localEnemies[enemyCount].health = m->health;
+            localEnemies[enemyCount].maxHealth = m->maxHealth;
+            localEnemies[enemyCount].damage = m->damage;
+            strcpy(localEnemies[enemyCount].name, m->name);
+            enemyCount++;
+        }
     }
     printf("%d monsters appear!\n", enemyCount);
     int championIndex = 0;
     int monsterIndex = 0;
     int downedMonster = 0;
+    int woundedChampions = 0;
     int totalExp = 0;
     while (1) {
         if (championIndex >= 3) championIndex = 0;
@@ -74,9 +86,17 @@ void initCombat(Game *game) {
                     printf("\n=== VICTORY ===\n");
                     printf("All monsters defeated!\n");
                     printf("Experience gained: %d\n", totalExp);
+                    addXp(game, totalExp);
                     return;
                 }
                 championIndex++;
+                for (int i = 0; i < 3; i++) {
+                    for (int j = 0; j < 4; j++) {
+                        if (game->champion[i].skillCooldown[j] > 0) {
+                            game->champion[i].skillCooldown[j]--;
+                        }
+                    }
+                }
                 break;
             }
             case 2: {
@@ -89,6 +109,7 @@ void initCombat(Game *game) {
                     printf("\n=== VICTORY ===\n");
                     printf("All monsters defeated!\n");
                     printf("Experience gained: %d\n", totalExp);
+                    addXp(game, totalExp);
                     return;
                 }
                 championIndex++;
@@ -104,7 +125,6 @@ void initCombat(Game *game) {
                 printf("Invalid choice.\n");
                 break;
         }
-        
         while (monsterIndex < enemyCount && localEnemies[monsterIndex].health <= 0) {
             monsterIndex++;
         }
@@ -132,17 +152,14 @@ void initCombat(Game *game) {
         game->champion[targetIdx].health -= localEnemies[monsterIndex].damage;
         if (game->champion[targetIdx].health < 0) {
             game->champion[targetIdx].health = 0;
+            woundedChampions++;
         }
         printf("\n%s attacks Champion %d for %d damage! (HP: %d/%d)\n",
                localEnemies[monsterIndex].name, targetIdx + 1, 
                localEnemies[monsterIndex].damage,
                game->champion[targetIdx].health, 
                game->champion[targetIdx].maxHealth);
-        aliveCount = 0;
-        for (int i = 0; i < 3; i++) {
-            if (game->champion[i].health > 0) aliveCount++;
-        }
-        if (aliveCount == 0) {
+        if (woundedChampions >= 3) {
             printf("\n=== DEFEAT ===\n");
             printf("All champions defeated!\n");
             game->initialized = 0;
@@ -181,7 +198,7 @@ int selectTarget(Monster enemies[], int enemyCount) {
         if (target == -1) {
             printf("Invalid target!\n");
             continue;
-        }
+        }        
         return target;
     }
 }
