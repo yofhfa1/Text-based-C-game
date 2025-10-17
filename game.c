@@ -1,11 +1,13 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "sideEvent.c"
-#include "movement.c"
-#include "explore.c"
-#include "shop.c"
-#include "character.c"
+#include "sideEvent.h"
+#include "movement.h"
+#include "explore.h"
+#include "shop.h"
+#include "character.h"
 #include "game_object.h"
+#include "combat.h"
+#include "fileio.h"
 
 void initGame(Game * game) {
 	game->level = 0;

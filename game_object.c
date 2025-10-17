@@ -26,7 +26,7 @@ Node* getElementAt(LinkedList list, int index) {
     int i = 0;
     Node *current = list.head;
 
-    if (list.head == NULL) return;
+    if (list.head == NULL) return NULL;
     while (i != index && current != NULL) {
         current = current->next;
         i++;

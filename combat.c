@@ -1,5 +1,4 @@
-#pragma once
-
+#include <stdio.h>
 #include "game_object.h"
 
 //placeholder placeholder

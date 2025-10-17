@@ -1,4 +1,8 @@
+
+#include <stdlib.h>
+#include <stdio.h>
 #include "game_object.h"
+#include "movement.h"
 
 // Show movement interface with locations that 
 // the player can move to

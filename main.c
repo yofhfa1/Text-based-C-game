@@ -1,9 +1,11 @@
-#include "fileio.c"
-#include "game.c"
-#include "explore.c"
-#include "combat.c"
+#include <stdio.h>
+#include "fileio.h"
+#include "game.h"
+#include "explore.h"
+#include "combat.h"
 #include "game_object.h"
-#include "character.c"
+#include "character.h"
+#include "movement.h"
 #include "cJSON.h"
 
 void showMainMenu(Game * game);
@@ -38,7 +40,7 @@ void showMainMenu(Game * game) {
                     break;
                 case 2:
                     //This is manual save so autosave = 0
-                    saveGame(game, 0);
+                    saveGame(game);
                     break;
                 case 3:
                     // viewStats(game);
@@ -49,7 +51,7 @@ void showMainMenu(Game * game) {
                     doGameTick(game);
                     break;
                 case 5:
-                    loadGame(game, "");
+                    loadGame(game);
                     doGameTick(game);
                     break;
                 case 6:
@@ -71,7 +73,7 @@ void showMainMenu(Game * game) {
                     doGameTick(game);
                     break;
                 case 2:
-                    loadGame(game, "");
+                    loadGame(game);
                     doGameTick(game);
                     break;
                 case 3:

@@ -1,10 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "game_object.h"
-#include "character.c"
-
-void handleTrap(Game * game);
-void handleChest(Game * game);
+#include "character.h"
+#include "sideEvent.h"
 
 void handleSideEvent(Game* game) {
     int eventType = rand() % 2;

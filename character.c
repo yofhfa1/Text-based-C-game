@@ -1,11 +1,6 @@
-#pragma once
-
+#include <stdio.h>
 #include "game_object.h"
-
-int printAndCountFormation(Game * game);
-void addChampion(Game * game, int championAmount);
-void removeChampion(Game * game, int championAmount);
-void changeChampion(Game * game, int championAmount);
+#include "character.h"
 
 void editFormation(Game * game) {
     int choice;

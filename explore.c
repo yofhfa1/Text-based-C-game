@@ -1,10 +1,10 @@
-#pragma once
-
 #include <stdio.h>
 #include <stdlib.h>
 #include "game_object.h"
-#include "combat.c"
-#include "shop.c"
+#include "combat.h"
+#include "shop.h"
+#include "sideEvent.h"
+// #include "Shop.c"
 
 int getWeightedScenario(int weights[], int size) {
     int total = 0;

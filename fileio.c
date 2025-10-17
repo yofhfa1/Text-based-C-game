@@ -1,13 +1,12 @@
-#pragma once
-
 #include <sys/stat.h>
-#include "game_object.h"
 #include <unistd.h>
 #include <fcntl.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
+#include "game_object.h"
+#include "fileio.h"
 #include <cJSON.h>
 
 #define SAVE_DIRECTORY "./saves/"
@@ -19,7 +18,7 @@ void initFileIO() {
 }
 
 // Make multithreading for this later
-void saveGame(Game * game, char * filename) {
+void saveGame(Game * game) {
     char temp[50];
     sprintf(temp, "%s%s%d\n", SAVE_DIRECTORY, /*autosave*/1?"autosave_":"", current_save);
     int fpointer = open(temp, O_WRONLY);
@@ -52,7 +51,8 @@ void saveGame(Game * game, char * filename) {
     cJSON_Delete(root);   
 }
 
-void loadGame(Game * game, char * filename) {
+void loadGame(Game * game) {
+    char filename[20] = "buhbuh\0";
     // Unsafe but handled in main
     int fd = open(filename, O_RDONLY);
     struct stat st;

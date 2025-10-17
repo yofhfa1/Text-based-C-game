@@ -107,14 +107,14 @@ typedef struct {
     Shop shop;
 } Game;
 
-void init(LinkedList list);
-void insert(LinkedList list, void *pt);
-Node* getElementAt(LinkedList list, int index);
-Node* removeAt(LinkedList list, int index);
-void freeList(LinkedList list);
+extern void init(LinkedList list);
+extern void insert(LinkedList list, void *pt);
+extern Node* getElementAt(LinkedList list, int index);
+extern Node* removeAt(LinkedList list, int index);
+extern void freeList(LinkedList list);
 // Method to find the index'th true value in a binary map
 // Return -1 if an error was found
-int findBinaryMapping(int binaryMap[], int index, int length);
-void addTimeOfTheDay(Game * game, int value);
+extern int findBinaryMapping(int binaryMap[], int index, int length);
+extern void addTimeOfTheDay(Game * game, int value);
 
 #endif
