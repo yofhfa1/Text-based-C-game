@@ -7,18 +7,19 @@ void editFormation(Game * game) {
     int menuIndex = 0;
     int binaryArray[4] = {0, 0, 0, 1};
     while (1) {
+        printf("Formation editor menu.\n");
         int championAmount = printAndCountFormation(game);
         if (championAmount < 3) {
-            printf("%d. Add new champion.", menuIndex+1);
+            printf("%d. Add new champion.\n", ++menuIndex);
             binaryArray[0] = 1;
         }
         if (championAmount > 0) {
-            printf("%d. Remove champion.", menuIndex+1);
-            printf("%d. Change champion.", menuIndex+1);
+            printf("%d. Remove champion.\n", ++menuIndex);
+            printf("%d. Change champion.\n", ++menuIndex);
             binaryArray[1] = 1;
             binaryArray[2] = 1;
         }
-        printf("Exit.");
+        printf("%d. Quit.\n", ++menuIndex);
         printf("Your choice: ");
         scanf("%d", &choice);
         findBinaryMapping(binaryArray, choice-1, 4);
@@ -36,7 +37,7 @@ void editFormation(Game * game) {
             return;
 
         default:
-            printf("Invalid choice");
+            printf("Invalid choice\n");
             continue;
         }
     }
@@ -67,13 +68,13 @@ void addChampion(Game * game, int championAmount) {
 
 void removeChampion(Game * game, int championAmount) {
     while (1) {
-        printf("Select champion you want to remove");
+        printf("Select champion you want to remove\n");
         for (int i = 0;i < championAmount;i++) {
             printf("%d. %s lv: %d, xp: %d\n", i+1, champion_string[game[i].champion->class],
                 game->champion[i].level, game->champion[i].xp);
         }
         printf("%d. Quit\n", championAmount);
-        printf("Your choice: ");
+        printf("Your choice: \n");
         int choice;
         scanf("%d", &choice);
         if (choice < 0 || choice > championAmount) {
@@ -95,14 +96,14 @@ void removeChampion(Game * game, int championAmount) {
 
 void changeChampion(Game * game, int championAmount) {
     while (1) {
-        printf("Select champion you want to change");
+        printf("Select champion you want to change\n");
         for (int i = 0;i < championAmount;i++) {
             printf("%d. %s lv: %d, xp: %d\n", i+1,
                 champion_string[game->champion[i].class], game->champion[i].level,
                 game->champion[i].xp);
         }
         printf("%d. Quit\n", championAmount);
-        printf("Your choice: ");
+        printf("Your choice: \n");
         int choice;
         scanf("%d", &choice);
         if (choice < 0 || choice > championAmount) {
@@ -154,7 +155,7 @@ int printAndCountFormation(Game * game) {
     for (int i = 0;i < 3;i++) {
         Champion champion = game->champion[i];
         // Check if there is a champion
-        if (champion.maxHealth >= 0) {
+        if (champion.maxHealth > 0) {
             counter++;
             printf("Champion %d:\n", i+1);
             printf("Level: %d\n", champion.level);
