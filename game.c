@@ -10,6 +10,7 @@
 #include "fileio.h"
 
 void initGame(Game * game) {
+	game->initialized = 1;
 	game->level = 0;
 	game->day = 0;
 	game->timeOfTheDay = 0;
@@ -19,7 +20,6 @@ void initGame(Game * game) {
 	loadMapAndLocationData(game);
 	loadConfig(game);
 	loadShop(game);
-	game->initialized = 1;
 }
 
 void rest(Game * game) {

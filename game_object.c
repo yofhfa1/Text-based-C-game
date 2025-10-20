@@ -76,11 +76,9 @@ void freeList(LinkedList list) {
 // Return -1 if an error was found
 int findBinaryMapping(int binaryMap[], int index, int length) {
     int i = 0;
-    for (;i < length && index > 0;i++) {
+    for (;i < length;i++) {
         if (binaryMap[i] >= 1) index--;
-    }
-    if (index == 0) {
-        return i;
+        if (index == 0) return i;
     }
     return -1;
 }

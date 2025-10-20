@@ -1,6 +1,7 @@
 #include "game_object.h"
 
-void saveGame(Game * game);
+void initFileIO();
+void saveGame(Game * game, int autosave);
 void loadGame(Game * game);
 void loadMap(Game * game);
 void loadMapAndLocationData(Game * game);

@@ -1,6 +1,5 @@
 // game.h
-#ifndef GAME_OBJECT
-#define GAME_OBJECT 1
+#pragma once
 
 typedef struct node_t {
     void *value;
@@ -27,7 +26,7 @@ enum Class {
     FOREACH_CHAMPION(GENERATE_ENUM)
 };
 
-static const char *champion_string[] = {
+static const char * const champion_string[] = {
     FOREACH_CHAMPION(GENERATE_STRING)
 };
 
@@ -99,8 +98,8 @@ typedef struct {
     LinkedList itemList;    
     Champion champion[3];
     // Implement map using adjacentMatrix;
-    int *map;
-    LocationData *locationData;
+    int* map;
+    LocationData* locationData;
     int mapSize;
     int initialized;
     Config config;
@@ -117,5 +116,3 @@ extern void freeList(LinkedList list);
 // Return -1 if an error was found
 extern int findBinaryMapping(int binaryMap[], int index, int length);
 extern void addTimeOfTheDay(Game * game, int value);
-
-#endif

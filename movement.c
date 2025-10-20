@@ -8,7 +8,7 @@
 // the player can move to
 void move(Game * game) {
     while (1) {
-        printf("Select locations you want to move to!");
+        printf("Select locations you want to move to!\n");
         int *pt = game->map + game->mapSize*game->level;
         int counter = 0;
         for (int i = 0;i < game->mapSize;i++) {
@@ -18,7 +18,7 @@ void move(Game * game) {
             }
         }
         printf("%d. Quit\n", ++counter);
-        printf("Select the location you want to move to: \n");
+        printf("Select the location you want to move to: ");
         int choice;
         scanf("%d", &choice);
         if (choice == counter) return;
