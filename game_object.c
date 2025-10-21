@@ -3,23 +3,24 @@
 #include <stdlib.h>
 #include "game_object.h"
 
-void init(LinkedList list) {
-    list.head = NULL;
-    list.tail = NULL;
-    list.size = 0;
+void init(LinkedList * list) {
+    list->head = NULL;
+    list->tail = NULL;
+    list->size = 0;
 }
 
-void insert(LinkedList list, void *pt) {
+void insert(LinkedList * list, void *pt) {
     Node *node = (Node *)malloc(sizeof(Node));
     node->value = pt;
     node->next = NULL;
-    if (list.head == NULL) {
-        list.head = node;
+    if (list->head == NULL) {
+        list->head = node;
+        list->tail = node;
     } else {
-        list.tail->next = node;
-        list.tail = node;
+        list->tail->next = node;
+        list->tail = node;
     }
-    list.size++;
+    list->size++;
 }
 
 Node* getElementAt(LinkedList list, int index) {

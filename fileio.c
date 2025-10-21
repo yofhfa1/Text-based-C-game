@@ -145,14 +145,13 @@ void saveMap(Game * game) {
 }
 
 void initMap(Game * game) {
-    creat(MAP_FILE, S_IRWXU);
-    int fd = open(MAP_FILE, O_RDONLY);
+    int fd = open(MAP_FILE, O_WRONLY | O_CREAT | O_TRUNC, 0644);
     if (fd == -1) {}
 
     cJSON *root = cJSON_CreateArray();
     for (int i = 0;i < 8;i++) {
         int a[8] = {1, 1, 1, 1, 1, 1, 1, 1};
-        cJSON *adjMap = cJSON_CreateIntArray(a, game->mapSize);
+        cJSON *adjMap = cJSON_CreateIntArray(a, 8);
         cJSON_AddItemToArray(root, adjMap);
     }
 
@@ -177,6 +176,10 @@ void loadMap(Game * game) {
         game->initialized = 0;
         return;
     } 
+    if (st.st_size == 0) {
+        initMap(game);
+        fd = open(MAP_FILE, O_RDONLY);
+    }
     char buffer[st.st_size];
     size_t size = read(fd, buffer, st.st_size);
     if (size < st.st_size) {
@@ -205,7 +208,12 @@ void loadMap(Game * game) {
     cJSON_Delete(root);
 }
 
-void loadMapAndLocationData(Game * game) {}
+// implement location data 
+
+void loadMapAndLocationData(Game * game) {
+    loadMap(game);
+    loadLocationData(game);
+}
 
 void saveConfig(Game * game) {
     int fd = open(CONFIG_FILE, O_WRONLY);
@@ -242,7 +250,7 @@ void saveConfig(Game * game) {
 }
 
 void initConfig(Game * game) {
-    int fd = open(CONFIG_FILE, O_WRONLY | O_CREAT | O_TRUNC);
+    int fd = open(CONFIG_FILE, O_WRONLY | O_CREAT | O_TRUNC, 0644);
     if (fd == -1) {}
 
     cJSON *root = cJSON_CreateObject();
@@ -266,12 +274,8 @@ void initConfig(Game * game) {
     cJSON_AddNumberToObject(root, "teleportPenalty", 1);
     cJSON_AddNumberToObject(root, "sellValue", 0.5);
     char *json_str = cJSON_Print(root);
-    while (*json_str != '\0') {
-        write(fd, json_str, strlen(json_str));
-        printf("written %d bytes\n", errno);
-        json_str++;
-    }
-
+    write(fd, json_str, strlen(json_str));
+   
     close(fd);
     // cJSON_free(json_str);
     cJSON_Delete(root);
@@ -282,6 +286,7 @@ void loadConfig(Game * game) {
     // If config file not found init 
     int fd = open(CONFIG_FILE, O_RDONLY);
     if (fd == -1) {
+        printf("%d\n", errno);
         initConfig(game);
         fd = open(CONFIG_FILE, O_RDONLY);
     }
@@ -356,12 +361,15 @@ void saveShop(Game * game) {
 }
 
 void initShop(Game * game) {
-    int fd = open(SHOP_FILE, O_CREAT);
-    if (fd == -1) {}
+    int fd = open(SHOP_FILE, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+    if (fd == -1) {
+        printf("error when open file %d", errno);
+    }
 
     cJSON *root = cJSON_CreateObject();
     cJSON *itemList = cJSON_AddArrayToObject(root, "itemList");
     Item item;
+    item.effectValue = HEALTH_POTION;
     item.name[1] = 'a';
     item.name[2] = '\0';
     item.value = 50;
@@ -372,12 +380,10 @@ void initShop(Game * game) {
     cJSON_AddNumberToObject(item_object, "effectValue", item.effectValue);
     cJSON_AddItemToArray(itemList, item_object);
 
-
     char *json_str = cJSON_Print(root);
     write(fd, json_str, strlen(json_str));
 
     close(fd);
-    cJSON_free(json_str);
     cJSON_Delete(root);
 }
 
@@ -393,7 +399,11 @@ void loadShop(Game * game) {
         printf("Shop reading failed! Exiting!");
         game->initialized = 0;
         return;
-    } 
+    }
+    if (st.st_size) {
+        initShop(game);
+        fd = open(SHOP_FILE, O_RDONLY);
+    }
     char buffer[st.st_size];
     size_t size = read(fd, buffer, st.st_size);
     if (size < st.st_size) {
@@ -405,9 +415,16 @@ void loadShop(Game * game) {
 
     cJSON *root = cJSON_Parse(buffer);
     cJSON *itemList = cJSON_GetObjectItem(root, "itemList");
+    cJSON *temp;
     
     for (int i = 0;i < cJSON_GetArraySize(itemList);i++) {
-        insert(game->shop.itemList, cJSON_GetArrayItem(itemList, i));
+        temp = cJSON_GetArrayItem(itemList, i);
+        Item * item = (Item *) malloc(sizeof(Item));
+        item->type = cJSON_GetObjectItem(temp, "type")->valueint;
+        strcpy(item->name, cJSON_GetObjectItem(temp, "name")->valuestring);
+        item->value = cJSON_GetObjectItem(temp, "value")->valueint;
+        item->effectValue = cJSON_GetObjectItem(temp, "effectValue")->valueint;
+        insert(&(game->shop.itemList), item);
     }
     cJSON_Delete(root);
 }

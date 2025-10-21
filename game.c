@@ -15,7 +15,7 @@ void initGame(Game * game) {
 	game->day = 0;
 	game->timeOfTheDay = 0;
 	game->gold = 0;
-	init(game->itemList);
+	init(&(game->itemList));
 	editFormation(game);
 	loadMapAndLocationData(game);
 	loadConfig(game);

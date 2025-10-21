@@ -18,27 +18,28 @@ void move(Game * game) {
             }
         }
         printf("%d. Quit\n", ++counter);
-        printf("Select the location you want to move to: ");
+        printf("Select the location you want to move to: \n");
         int choice;
         scanf("%d", &choice);
         if (choice == counter) return;
-        choice = findBinaryMapping(pt, choice-1, game->mapSize);
+        choice = findBinaryMapping(pt, choice, game->mapSize);
         if (choice == -1) {
-            printf("Invalid choice, please select number from 0-%d!\n", choice);
+            printf("Invalid choice, please select number from 1-%d!\n", counter);
             continue;
         }
         
-        printf("You have moved to %s", ((LocationData *) game->locationData + choice)->name);
+        printf("You have moved to %s\n", ((LocationData *) game->locationData + choice)->name);
         game->level = choice;
+        return;
     }
 }
 
 void teleport(Game * game, int dest) {
     LinkedList queue;
-    init(queue);
+    init(&queue);
     int *current = (int *) malloc(sizeof(int));
     *current = game->level;
-    insert(queue, current);
+    insert(&queue, current);
     int stepCounter = 0;
     for (int j = 0;j < game->mapSize;j++) {
         Node *node = removeAt(queue, 0);
@@ -57,7 +58,7 @@ void teleport(Game * game, int dest) {
                 } else {
                     int *temp = (int *) malloc(sizeof(int));
                     *temp = i;
-                    insert(queue, temp);
+                    insert(&queue, temp);
                 }
             }
         }

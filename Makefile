@@ -13,7 +13,7 @@ build:
 
 # Debug
 debug: 
-	$(CC) $(SRC) main.c $(LIB_SRC) -g $(IMPORT_FLAGS) $^ -o main
+	$(CC) $(SRC) main.c $(LIB_SRC) -g $(IMPORT_FLAGS) $^ -o game.out
 # 	gdb game.out
 
 # Build the tests and test

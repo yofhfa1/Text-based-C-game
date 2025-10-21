@@ -7,10 +7,11 @@
 void showShop(Game *game) {
     printf("\n======== SHOP ========\n");
     int i = 0;
-    Item *item = (Item *) game->shop.itemList.head;
-    while (item != NULL) {
+    Node *node = game->shop.itemList.head;
+    for (;i < game->shop.itemList.size;i++) {
+        Item * item = (Item *) node->value;
         printf("%d. %s - %d Gold\n", i + 1, item->name, item->value);
-        i++;
+        node++;
     }
     printf("%d. Thoat\n", i + 1);
 }
@@ -22,9 +23,10 @@ void showInventory(Game *game) {
     if (game->itemList.size == 0) {
         printf("Ban chua co do nao.\n");
     } else {
-        Item *item = (Item *) game->itemList.head;
+        Node *node =  game->itemList.head;
 
-        while (item != NULL) {
+        while (node != NULL) {
+            Item *item = (Item *) node->value;
             printf("%d. %s - Ban duoc %d Gold\n", i + 1, item->name, (int) (item->value * game->config.sellValue));
         }
         i++;
@@ -54,7 +56,7 @@ void buyItem(Game *game) {
             Item *newItem = malloc(sizeof(Item));
             // Value copy item to inventory
             *newItem = *it;
-            insert(game->itemList, newItem);
+            insert(&(game->itemList), newItem);
             printf("Ban da mua %s! (Con %d Gold)\n", it->name, game->gold);
         } else {
             printf("Ban khong du tien!\n");

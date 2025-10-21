@@ -107,8 +107,8 @@ typedef struct {
     int isTester;
 } Game;
 
-extern void init(LinkedList list);
-extern void insert(LinkedList list, void *pt);
+extern void init(LinkedList * list);
+extern void insert(LinkedList * list, void *pt);
 extern Node* getElementAt(LinkedList list, int index);
 extern Node* removeAt(LinkedList list, int index);
 extern void freeList(LinkedList list);

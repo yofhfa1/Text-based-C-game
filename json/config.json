@@ -1,0 +1,18 @@
+{
+	"allowSaveInCombat":	0,
+	"difficulty":	1,
+	"baseLvUpXp":	100,
+	"lvUpXpMul":	1.2,
+	"chestGoldMin":	50,
+	"chestGoldMax":	100,
+	"chestItemChance":	50,
+	"lockpickChance":	80,
+	"trapDisarmChance":	80,
+	"trapDisarmExp":	100,
+	"trapDamage":	10,
+	"explorationTurn":	3,
+	"scenarioWeights":	[30, 30, 40],
+	"maxTimeOfTheDay":	4,
+	"teleportPenalty":	1,
+	"sellValue":	0.5
+}
