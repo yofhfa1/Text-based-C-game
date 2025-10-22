@@ -14,7 +14,7 @@ void move(Game * game) {
         for (int i = 0;i < game->mapSize;i++) {
             // Node is connected to each other
             if (*(pt + i) == 1) {
-                printf("%d. %s\n", ++counter, ((LocationData *) game->locationData)->name);
+                printf("%d. %s\n", ++counter, game->locationData[i].name);
             }
         }
         printf("%d. Quit\n", ++counter);
@@ -28,7 +28,7 @@ void move(Game * game) {
             continue;
         }
         
-        printf("You have moved to %s\n", ((LocationData *) game->locationData + choice)->name);
+        printf("You have moved to %s\n", game->locationData[choice].name);
         game->level = choice;
         return;
     }

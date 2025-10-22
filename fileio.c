@@ -13,6 +13,7 @@
 #define SAVE_DIRECTORY "./saves/"
 #define JSON_DIR "./json"
 #define MAP_FILE "./json/map.json"
+#define LOCATION_DATA_FILE "./json/location_data.json"
 #define CONFIG_FILE "./json/config.json"
 #define SHOP_FILE "./json/shop.json"
 #define MAX_AUTOSAVE 8
@@ -203,11 +204,93 @@ void loadMap(Game * game) {
         cJSON *adjMap = cJSON_GetArrayItem(root, i);
         for (int j = 0;j < game->mapSize;j++) {
             *pt = cJSON_GetArrayItem(adjMap, j)->valueint;
+            pt++;
         }
     }
     cJSON_Delete(root);
 }
 
+void initLocationData(Game * game) {
+    int fd = open(LOCATION_DATA_FILE, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+    if (fd == -1) {}
+
+    cJSON *root = cJSON_CreateArray();
+    for (int i = 0;i < game->mapSize;i++) {
+        cJSON *locationData = cJSON_CreateObject();
+        cJSON_AddStringToObject(locationData, "name", "bla");
+        cJSON *monsterList = cJSON_AddArrayToObject(locationData, "monsterList");
+        cJSON *monster = cJSON_CreateObject();
+        cJSON_AddNumberToObject(monster, "health", 100);
+        cJSON_AddNumberToObject(monster, "maxHealth", 100);
+        cJSON_AddNumberToObject(monster, "damage", 10);
+        cJSON_AddStringToObject(monster, "name", "buhbuh");
+        cJSON_AddItemToArray(monsterList, monster);
+        cJSON_AddItemToArray(root, locationData);
+    }
+
+    char *json_str = cJSON_Print(root);
+    write(fd, json_str, strlen(json_str));
+
+    close(fd);
+    cJSON_free(json_str);
+    cJSON_Delete(root);
+}
+
+void loadLocationData(Game * game) {
+    int fd = open(LOCATION_DATA_FILE, O_RDONLY);
+    if (fd == -1) {
+        initLocationData(game);
+        fd = open(LOCATION_DATA_FILE, O_RDONLY);
+    }
+    
+    struct stat st;
+    if (fstat(fd, &st) != 0) {
+        printf("Location data reading failed! Exiting!\n");
+        game->initialized = 0;
+        return;
+    } 
+    if (st.st_size == 0) {
+        initLocationData(game);
+        fd = open(LOCATION_DATA_FILE, O_RDONLY);
+    }
+    char buffer[st.st_size];
+    size_t size = read(fd, buffer, st.st_size);
+    if (size < st.st_size) {
+        printf("Location data reading failed! Exiting!\n");
+        printf("Errno %d\n", errno);
+        game->initialized = 0;
+        return;
+    }
+    close(fd);
+
+    cJSON *root = cJSON_Parse(buffer);
+    if (!cJSON_IsArray(root)) {
+        printf("Location data reading failed! Exiting!\n");
+        game->initialized = 0;
+        return;
+    }
+
+    game->locationData = (LocationData *) malloc(game->mapSize * sizeof(LocationData));
+    LocationData * temp = game->locationData;
+    init(&(temp->monsterList));
+    
+    for (int i = 0;i < game->mapSize;i++) {
+        cJSON *locationData = cJSON_GetArrayItem(root, i);
+        strcpy(temp->name, cJSON_GetObjectItem(locationData, "name")->valuestring);
+        cJSON *monsterList = cJSON_GetObjectItem(locationData, "monsterList");
+        for (int j = 0;j < cJSON_GetArraySize(monsterList);j++) {
+            cJSON * monster_json = cJSON_GetArrayItem(monsterList, j);
+            Monster * monster = (Monster *) malloc(sizeof(Monster));
+            monster->health = cJSON_GetObjectItem(monster_json, "health")->valueint;
+            monster->maxHealth = cJSON_GetObjectItem(monster_json, "maxHealth")->valueint;
+            monster->damage = cJSON_GetObjectItem(monster_json, "damage")->valueint;
+            strcpy(monster->name, cJSON_GetObjectItem(monster_json, "name")->valuestring);
+            insert(&(temp->monsterList), monster);
+        }
+        temp++;
+    }
+    cJSON_Delete(root);
+}
 // implement location data 
 
 void loadMapAndLocationData(Game * game) {
@@ -279,14 +362,12 @@ void initConfig(Game * game) {
     close(fd);
     // cJSON_free(json_str);
     cJSON_Delete(root);
-    printf("initConfig complete");
 }
 
 void loadConfig(Game * game) {
     // If config file not found init 
     int fd = open(CONFIG_FILE, O_RDONLY);
     if (fd == -1) {
-        printf("%d\n", errno);
         initConfig(game);
         fd = open(CONFIG_FILE, O_RDONLY);
     }
@@ -369,7 +450,9 @@ void initShop(Game * game) {
     cJSON *root = cJSON_CreateObject();
     cJSON *itemList = cJSON_AddArrayToObject(root, "itemList");
     Item item;
-    item.effectValue = HEALTH_POTION;
+    item.type = HEALTH_POTION;
+    item.effectValue = 1;
+    item.name[0] = 'h';
     item.name[1] = 'a';
     item.name[2] = '\0';
     item.value = 50;
@@ -400,7 +483,7 @@ void loadShop(Game * game) {
         game->initialized = 0;
         return;
     }
-    if (st.st_size) {
+    if (st.st_size == 0) {
         initShop(game);
         fd = open(SHOP_FILE, O_RDONLY);
     }
@@ -416,6 +499,7 @@ void loadShop(Game * game) {
     cJSON *root = cJSON_Parse(buffer);
     cJSON *itemList = cJSON_GetObjectItem(root, "itemList");
     cJSON *temp;
+    init(&(game->shop.itemList));
     
     for (int i = 0;i < cJSON_GetArraySize(itemList);i++) {
         temp = cJSON_GetArrayItem(itemList, i);
