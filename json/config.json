@@ -11,7 +11,7 @@
 	"trapDisarmExp":	100,
 	"trapDamage":	10,
 	"explorationTurn":	3,
-	"scenarioWeights":	[30, 30, 40],
+	"scenarioWeights":	[70, 0, 30],
 	"maxTimeOfTheDay":	4,
 	"teleportPenalty":	1,
 	"sellValue":	0.5,

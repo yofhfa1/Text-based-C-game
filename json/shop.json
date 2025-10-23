@@ -1,8 +1,8 @@
 {
 	"itemList":	[{
 			"type":	1,
-			"name":	"ha",
+			"name":	"Healing potion",
 			"value":	50,
-			"effectValue":	1
+			"effectValue":	100
 		}]
 }

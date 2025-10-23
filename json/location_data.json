@@ -1,65 +1,65 @@
 [{
-		"name":	"bla",
+		"name":	"Starting village",
 		"monsterList":	[{
 				"health":	100,
 				"maxHealth":	100,
-				"damage":	10,
-				"name":	"buhbuh"
+				"damage":	0,
+				"name":	"Testing dummy"
 			}]
 	}, {
-		"name":	"bla",
+		"name":	"Beginner area 1",
 		"monsterList":	[{
 				"health":	100,
 				"maxHealth":	100,
 				"damage":	10,
-				"name":	"buhbuh"
+				"name":	"Sigma boy"
 			}]
 	}, {
-		"name":	"bla",
+		"name":	"Beginner area 2",
 		"monsterList":	[{
 				"health":	100,
 				"maxHealth":	100,
 				"damage":	10,
-				"name":	"buhbuh"
+				"name":	"Omega male"
 			}]
 	}, {
-		"name":	"bla",
+		"name":	"Beginner area 3",
 		"monsterList":	[{
 				"health":	100,
 				"maxHealth":	100,
 				"damage":	10,
-				"name":	"buhbuh"
+				"name":	"Alpha male"
 			}]
 	}, {
-		"name":	"bla",
+		"name":	"Intermidiate area 1",
 		"monsterList":	[{
-				"health":	100,
-				"maxHealth":	100,
-				"damage":	10,
-				"name":	"buhbuh"
+				"health":	200,
+				"maxHealth":	200,
+				"damage":	20,
+				"name":	"Shalalelo shalala"
 			}]
 	}, {
-		"name":	"bla",
+		"name":	"Intermidiate area 2",
 		"monsterList":	[{
-				"health":	100,
-				"maxHealth":	100,
-				"damage":	10,
-				"name":	"buhbuh"
+				"health":	200,
+				"maxHealth":	200,
+				"damage":	20,
+				"name":	"Crocodilo bombadio"
 			}]
 	}, {
-		"name":	"bla",
+		"name":	"Intermiditate area 3",
 		"monsterList":	[{
-				"health":	100,
-				"maxHealth":	100,
-				"damage":	10,
-				"name":	"buhbuh"
+				"health":	200,
+				"maxHealth":	200,
+				"damage":	20,
+				"name":	"Bananini chimpipanzi"
 			}]
 	}, {
-		"name":	"bla",
+		"name":	"Dragon lair",
 		"monsterList":	[{
-				"health":	100,
-				"maxHealth":	100,
-				"damage":	10,
-				"name":	"buhbuh"
+				"health":	300,
+				"maxHealth":	300,
+				"damage":	30,
+				"name":	"Hello world drgaonon"
 			}]
 	}]
