@@ -13,7 +13,7 @@ void showRoleMenu(Game *game);
 void adminMenu();
 
 int main() {
-    Game game;
+    Game game = {0};
     game.initialized = 0;
     game.isTester = 0;
     initFileIO();

@@ -13,10 +13,19 @@ int tickInterval = 0;
 
 void initGame(Game * game) {
 	game->initialized = 1;
-	game->level = 0;
-	game->day = 0;
-	game->timeOfTheDay = 0;
-	game->gold = 0;
+	// We already did this in main.c
+	// game->level = 0;
+	// game->day = 0;
+	// game->timeOfTheDay = 0;
+	// game->gold = 0;
+	// for (int i = 0;i < 3;i++) {
+	// 	game->champion[i].class = 0;
+	// 	game->champion[i].damage = 0;
+	// 	game->champion[i].health = 0;
+	// 	game->champion[i].maxHealth = 0;
+	// 	game->champion[i].level = 0;
+	// 	game->champion[i].xp = 0;
+	// }
 	init(&(game->itemList));
 	editFormation(game);
 	loadMapAndLocationData(game);

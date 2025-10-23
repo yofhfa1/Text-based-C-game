@@ -78,7 +78,7 @@ void loadGame(Game * game) {
     }
     struct dirent * dirent;
     int count = 0;
-    while ((dirent = readdir(dir) != NULL)) {
+    while ((dirent = readdir(dir)) != NULL) {
         if (strcmp(dirent->d_name, ".") == 0 && strcmp(dirent->d_name, "..") == 0) 
             continue;
         strcpy(filenames[count], dirent->d_name);
