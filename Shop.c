@@ -51,7 +51,7 @@ void buyItem(Game *game) {
         }
 
         Item *it = (Item *) getElementAt(game->shop.itemList, choice-1)->value;
-        if (game->gold >= it->value) {
+        if (game->gold >= it->value || game->isTester == 1) {
             game->gold -= it->value;
             Item *newItem = malloc(sizeof(Item));
             // Value copy item to inventory

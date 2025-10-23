@@ -53,7 +53,12 @@ void teleport(Game * game, int dest) {
             if (*(pt + i) == 1) {
                 if (i == dest) {
                     game->level = dest;
-                    addTimeOfTheDay(game, game->config.teleportPenalty + stepCounter);
+                    printf("Teleported to location which is: %d steps away.\n", stepCounter);
+                    if (game->isTester) {
+                        addTimeOfTheDay(game, stepCounter);
+                    } else {
+                        addTimeOfTheDay(game, game->config.teleportPenalty + stepCounter);
+                    }
                     return;
                 } else {
                     int *temp = (int *) malloc(sizeof(int));

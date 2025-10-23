@@ -39,7 +39,10 @@ void handleTrap(Game* game) {
                         if (game->champion[i].health > 0) {
                             game->champion[i].health -= game->config.trapDamage;
                             if (game->champion[i].health < 0) {
-                                game->champion[i].health = 0;
+                                if (game->isTester) {
+                                    printf("You were critically hit!\n");
+                                    game->champion[i].health = 1;
+                                } else game->champion[i].health = 0;
                             }
                         }
                     }
@@ -53,7 +56,10 @@ void handleTrap(Game* game) {
                     if (game->champion[i].health > 0) {
                         game->champion[i].health -= game->config.trapDamage;
                         if (game->champion[i].health < 0) {
-                            game->champion[i].health = 0;
+                            if (game->isTester) {
+                                printf("You were critically hit!\n");
+                                game->champion[i].health = 1;
+                            } else game->champion[i].health = 0;
                         }
                     }
                 }
