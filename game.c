@@ -27,11 +27,11 @@ void initGame(Game * game) {
 	// 	game->champion[i].xp = 0;
 	// }
 	init(&(game->itemList));
-	editFormation(game);
+	// editFormation(game);
 	loadMapAndLocationData(game);
 	loadConfig(game);
 	loadShop(game);
-	saveGame(game, 1);
+	// saveGame(game, 1);
 }
 
 void rest(Game * game) {

@@ -22,7 +22,8 @@ int current_save;
 
 void initFileIO() {
     current_save = 0;
-    mkdir("./json", S_IRWXU);
+    mkdir(JSON_DIR, S_IRWXU);
+    mkdir(SAVE_DIRECTORY, S_IRWXU);
 }
 
 // Make multithreading for this later
@@ -30,9 +31,11 @@ void saveGame(Game * game, int autosave) {
     char temp[50];
     if (!autosave) {
         sprintf(temp, "%sday%dtime%d.json", SAVE_DIRECTORY, game->day, game->timeOfTheDay);
-        printf("Enter the name of the file you want to save (leave blank for default name)");
+        printf("Enter the name of the file you want to save (leave blank for default name): ");
         fgets(temp, 50, stdin);
+        sprintf(temp, "%s%s", SAVE_DIRECTORY, temp);
     } else {
+        // There is a bug where it will always override slot 0 first
         sprintf(temp, "%sautosave_%d.json\n", SAVE_DIRECTORY, current_save);
         current_save++;
         if (current_save > MAX_AUTOSAVE) {
@@ -41,13 +44,25 @@ void saveGame(Game * game, int autosave) {
     }
     int fd = open(temp, O_WRONLY | O_CREAT | O_TRUNC, 0644);
     if (fd == -1) {
-        printf("error");
+        printf("error %d\n", errno);
     }
 
     cJSON *root = cJSON_CreateObject();
     cJSON_AddNumberToObject(root, "level", game->level);
     cJSON_AddNumberToObject(root, "day", game->day);
     cJSON_AddNumberToObject(root, "timeOfTheDay", game->timeOfTheDay);
+    cJSON_AddNumberToObject(root, "gold", game->gold);
+    cJSON *itemList = cJSON_AddArrayToObject(root, "itemList");
+    Node * current = game->itemList.head;
+    while (current != NULL) {
+        cJSON *item_object = cJSON_CreateObject();
+        Item *item = (Item *)current->value;
+        cJSON_AddNumberToObject(item_object, "type", item->type);
+        cJSON_AddStringToObject(item_object, "name", item->name);
+        cJSON_AddNumberToObject(item_object, "value", item->value);
+        cJSON_AddNumberToObject(item_object, "effectValue", item->effectValue);
+        cJSON_AddItemToArray(itemList, item_object);
+    }
     cJSON *champion = cJSON_AddArrayToObject(root, "champions");
     int i;
     for (i = 0; i < 3;i++) {
@@ -55,7 +70,10 @@ void saveGame(Game * game, int autosave) {
         cJSON_AddNumberToObject(temp, "health", game->champion[i].health);
         cJSON_AddNumberToObject(temp, "maxHealth", game->champion[i].maxHealth);
         cJSON_AddNumberToObject(temp, "damage", game->champion[i].damage);
-        cJSON_AddItemToArray(champion, temp);       
+        cJSON_AddNumberToObject(temp, "class", game->champion[i].class);
+        cJSON_AddNumberToObject(temp, "level", game->champion[i].level);
+        cJSON_AddNumberToObject(temp, "xp", game->champion[i].xp);
+        cJSON_AddItemToArray(champion, temp);
     }
 
     char *json_str = cJSON_Print(root);
@@ -79,7 +97,7 @@ void loadGame(Game * game) {
     struct dirent * dirent;
     int count = 0;
     while ((dirent = readdir(dir)) != NULL) {
-        if (strcmp(dirent->d_name, ".") == 0 && strcmp(dirent->d_name, "..") == 0) 
+        if (strcmp(dirent->d_name, ".") == 0 || strcmp(dirent->d_name, "..") == 0) 
             continue;
         strcpy(filenames[count], dirent->d_name);
         count++;
@@ -89,9 +107,10 @@ void loadGame(Game * game) {
         for (int i = 0;i < count;i++) {
             printf("%d. %s\n", i+1, filenames[i]);
         }
-        printf("%d. %s", count, "Quit\n");
+        printf("%d. %s", count+1, "Quit\n");
         printf("Select the file you want to load: ");
         scanf("%d", &choice);
+        choice--;
         if (choice == count) return;
         if (choice < 0 || choice > count) {
             continue;
@@ -99,7 +118,7 @@ void loadGame(Game * game) {
         break;
     } while (1);
     char filename[300];
-    sprintf(filename, "%s%s", SAVE_DIRECTORY, filenames[choice-1]);
+    sprintf(filename, "%s%s", SAVE_DIRECTORY, filenames[choice]);
     // Unsafe but handled in main
     int fd = open(filename, O_RDONLY);
     struct stat st;
@@ -116,35 +135,30 @@ void loadGame(Game * game) {
     close(fd);
 
     cJSON *root = cJSON_Parse(buffer);
+    cJSON *itemList = cJSON_GetObjectItem(root, "itemList");
     
-    cJSON *temp = cJSON_GetObjectItem(root, "level");
-    if (cJSON_IsNumber(temp)) {
-        game->level = temp->valueint;
-    }
-    temp = cJSON_GetObjectItem(root, "day");
-    if (cJSON_IsNumber(temp)) {
-        game->day = temp->valueint;
-    }
-    temp = cJSON_GetObjectItem(root, "timeOfTheDay");
-    if (cJSON_IsNumber(temp)) {
-        game->timeOfTheDay = temp->valueint;
+    game->level = cJSON_GetObjectItem(root, "level")->valueint;
+    game->day = cJSON_GetObjectItem(root, "day")->valueint;
+    game->timeOfTheDay = cJSON_GetObjectItem(root, "timeOfTheDay")->valueint;
+    game->gold = cJSON_GetObjectItem(root, "gold")->valueint;
+    for (int i = 0;i < cJSON_GetArraySize(itemList);i++) {
+        cJSON * temp = cJSON_GetArrayItem(itemList, i);
+        Item * item = (Item *) malloc(sizeof(Item));
+        item->type = cJSON_GetObjectItem(temp, "type")->valueint;
+        strcpy(item->name, cJSON_GetObjectItem(temp, "name")->valuestring);
+        item->value = cJSON_GetObjectItem(temp, "value")->valueint;
+        item->effectValue = cJSON_GetObjectItem(temp, "effectValue")->valueint;
+        insert(&(game->itemList), item);
     }
     cJSON *champions = cJSON_GetObjectItem(root, "champions");
-    cJSON *item = NULL;
     for (int i = 0;i < 3;i ++) {
-        item = cJSON_GetArrayItem(champions, i);
-        temp = cJSON_GetObjectItem(item, "health");
-        if (cJSON_IsNumber(temp)) {
-            game->champion[i].health = temp->valueint;
-        }
-        temp = cJSON_GetObjectItem(item, "maxHealth");
-        if (cJSON_IsNumber(temp)) {
-            game->champion[i].maxHealth = temp->valueint;
-        }
-        temp = cJSON_GetObjectItem(item, "damage");
-        if (cJSON_IsNumber(temp)) {
-            game->champion[i].damage = temp->valueint;
-        }
+        cJSON *champion = cJSON_GetArrayItem(champions, i);
+        game->champion[i].health = cJSON_GetObjectItem(champion, "health")->valueint;
+        game->champion[i].maxHealth = cJSON_GetObjectItem(champion, "maxHealth")->valueint;
+        game->champion[i].damage = cJSON_GetObjectItem(champion, "damage")->valueint;
+        game->champion[i].class = cJSON_GetObjectItem(champion, "class")->valueint;
+        game->champion[i].level = cJSON_GetObjectItem(champion, "level")->valueint;
+        game->champion[i].xp = cJSON_GetObjectItem(champion, "xp")->valueint;
     }
 
     cJSON_Delete(root);

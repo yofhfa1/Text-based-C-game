@@ -87,9 +87,12 @@ void showMainMenu(Game * game) {
                     break;
                 case 4:
                     initGame(game);
+                    editFormation(game);
+                    saveGame(game, 0);
                     doGameTick(game);
                     break;
                 case 5:
+                    initGame(game);
                     loadGame(game);
                     doGameTick(game);
                     break;
@@ -110,9 +113,12 @@ void showMainMenu(Game * game) {
             {
                 case 1:
                     initGame(game);
+                    editFormation(game);
+                    saveGame(game, 0);
                     doGameTick(game);
                     break;
                 case 2:
+                    initGame(game);
                     loadGame(game);
                     doGameTick(game);
                     break;
