@@ -36,41 +36,41 @@ Node* getElementAt(LinkedList list, int index) {
     return current;
 }
 
-Node* removeAt(LinkedList list, int index) {
+Node* removeAt(LinkedList *list, int index) {
     int i = 0;
-    Node *current = list.head;
+    Node *current = list->head;
     Node *prevNode = NULL;
 
-    if (list.head == NULL) return NULL;
+    if (list->head == NULL) return NULL;
     if (index == 0) {
-        prevNode = list.head;
-        list.head = list.head->next;
-        list.size--;
+        prevNode = list->head;
+        list->head = list->head->next;
+        list->size--;
+        if (list->size == 0) {list->tail = NULL;}
         return prevNode;
     }
-    while (i != index && current != list.tail) {
+    while (i != index && current != list->tail) {
         prevNode = current;
         current = current->next;
         i++;
     }
     if (i == index) {
         prevNode->next = current->next;
-        list.size--;
+        list->size--;
         return current;
     }
     return NULL;
 }
 
-void freeList(LinkedList list) {
-    Node *node = list.head;
+void freeList(LinkedList *list) {
+    Node *node = list->head;
     Node *prevNode = NULL;
     while (node != NULL) {
         free(node->value);
         prevNode = node;
         node = node->next;
-        free(node);
+        free(prevNode);
     }
-    free(prevNode);
 }
 
 // Method to find the index'th true value in a binary map

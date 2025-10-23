@@ -84,7 +84,7 @@ void sellItem(Game *game) {
         int goldEarned = it->value * game->config.sellValue;
         game->gold += goldEarned;
         
-        removeAt(game->itemList, choice - 1);
+        removeAt(&(game->itemList), choice - 1);
 
         printf("Ban da ban %s va nhan duoc %d Gold! (Tong: %d Gold)\n", it->name, goldEarned, game->gold);
     }

@@ -111,8 +111,8 @@ typedef struct {
 extern void init(LinkedList * list);
 extern void insert(LinkedList * list, void *pt);
 extern Node* getElementAt(LinkedList list, int index);
-extern Node* removeAt(LinkedList list, int index);
-extern void freeList(LinkedList list);
+extern Node* removeAt(LinkedList *list, int index);
+extern void freeList(LinkedList *list);
 // Method to find the index'th true value in a binary map
 // Return -1 if an error was found
 extern int findBinaryMapping(int binaryMap[], int index, int length);

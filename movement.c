@@ -36,34 +36,47 @@ void move(Game * game) {
 
 void teleport(Game * game, int dest) {
     LinkedList queue;
+    int visited[game->mapSize];
+    int distance[game->mapSize];
+    for (int i = 0;i < game->mapSize;i++) {
+        visited[i] = 0;
+        distance[i] = game->mapSize+1;
+    }
     init(&queue);
     int *current = (int *) malloc(sizeof(int));
     *current = game->level;
     insert(&queue, current);
-    int stepCounter = 0;
+    distance[*current] = 0;
     for (int j = 0;j < game->mapSize;j++) {
-        Node *node = removeAt(queue, 0);
-        current = (int *) node->value;
-        int *pt = game->map + game->mapSize*(*current);
+        Node *node = removeAt(&queue, 0);
+        int currentLevel = *(int *) node->value;
+        visited[currentLevel] = 1;
+        int *pt = game->map + game->mapSize*currentLevel;
+        free(node->value);
         free(node);
-        free(current);
 
         for (int i = 0;i < game->mapSize;i++) {
             // Node is connected to each other
             if (*(pt + i) == 1) {
                 if (i == dest) {
                     game->level = dest;
-                    printf("Teleported to location which is: %d steps away.\n", stepCounter);
+                    distance[dest] = distance[currentLevel] + 1;
+                    printf("Teleported to location which is: %d steps away.\n", distance[dest]);
                     if (game->isTester) {
-                        addTimeOfTheDay(game, stepCounter);
+                        addTimeOfTheDay(game, distance[dest]);
                     } else {
-                        addTimeOfTheDay(game, game->config.teleportPenalty + stepCounter);
+                        addTimeOfTheDay(game, game->config.teleportPenalty + distance[dest]);
                     }
+                    freeList(&queue);
                     return;
                 } else {
+                    if (visited[i]) continue;
                     int *temp = (int *) malloc(sizeof(int));
                     *temp = i;
-                    insert(&queue, temp);
+                    if (distance[i] > distance[currentLevel] + 1) {
+                        distance[i] = distance[currentLevel] + 1;
+                        insert(&queue, temp);
+                    }
                 }
             }
         }
