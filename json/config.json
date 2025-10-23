@@ -14,5 +14,6 @@
 	"scenarioWeights":	[30, 30, 40],
 	"maxTimeOfTheDay":	4,
 	"teleportPenalty":	1,
-	"sellValue":	0.5
+	"sellValue":	0.5,
+	"saveInterval":	10
 }

@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <dirent.h>
 #include <errno.h>
 
 #include "game_object.h"
@@ -28,17 +29,18 @@ void initFileIO() {
 void saveGame(Game * game, int autosave) {
     char temp[50];
     if (!autosave) {
+        sprintf(temp, "%sday%dtime%d.json", SAVE_DIRECTORY, game->day, game->timeOfTheDay);
         printf("Enter the name of the file you want to save (leave blank for default name)");
         fgets(temp, 50, stdin);
     } else {
-        sprintf(temp, "%s%s%d\n", SAVE_DIRECTORY, /*autosave*/1?"autosave_":"", current_save);
+        sprintf(temp, "%sautosave_%d.json\n", SAVE_DIRECTORY, current_save);
         current_save++;
         if (current_save > MAX_AUTOSAVE) {
             current_save = 0;
         }
     }
-    int fpointer = open(temp, O_WRONLY);
-    if (fpointer == -1) {
+    int fd = open(temp, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+    if (fd == -1) {
         printf("error");
     }
 
@@ -59,16 +61,45 @@ void saveGame(Game * game, int autosave) {
     char *json_str = cJSON_Print(root);
 
     // Write JSON string to file
-    write(fpointer, json_str, strlen(json_str));
+    write(fd, json_str, strlen(json_str));
 
     // Cleanup
-    close(fpointer);
+    close(fd);
     cJSON_free(json_str);
     cJSON_Delete(root);   
 }
 
 void loadGame(Game * game) {
-    char filename[20] = "buhbuh\0";
+    // 8kb for file loading is kinda weird but it's what it's for now
+    char filenames[32][256];
+    DIR * dir = opendir(SAVE_DIRECTORY);
+    if (dir == NULL) {
+        
+    }
+    struct dirent * dirent;
+    int count = 0;
+    while ((dirent = readdir(dir) != NULL)) {
+        if (strcmp(dirent->d_name, ".") == 0 && strcmp(dirent->d_name, "..") == 0) 
+            continue;
+        strcpy(filenames[count], dirent->d_name);
+        count++;
+    }
+    int choice;
+    do {
+        for (int i = 0;i < count;i++) {
+            printf("%d. %s\n", i+1, filenames[i]);
+        }
+        printf("%d. %s", count, "Quit\n");
+        printf("Select the file you want to load: ");
+        scanf("%d", &choice);
+        if (choice == count) return;
+        if (choice < 0 || choice > count) {
+            continue;
+        }
+        break;
+    } while (1);
+    char filename[300];
+    sprintf(filename, "%s%s", SAVE_DIRECTORY, filenames[choice-1]);
     // Unsafe but handled in main
     int fd = open(filename, O_RDONLY);
     struct stat st;
@@ -322,7 +353,7 @@ void saveConfig(Game * game) {
     cJSON_AddNumberToObject(root, "maxTimeOfTheDay", config.maxTimeOfTheDay);
     cJSON_AddNumberToObject(root, "teleportPenalty", config.teleportPenalty);
     cJSON_AddNumberToObject(root, "sellValue", config.sellValue);
-
+    cJSON_AddNumberToObject(root, "saveInterval", config.saveInterval);
     char *json_str = cJSON_Print(root);
     write(fd, json_str, strlen(json_str));
 
@@ -356,6 +387,7 @@ void initConfig(Game * game) {
     cJSON_AddNumberToObject(root, "maxTimeOfTheDay", 4);
     cJSON_AddNumberToObject(root, "teleportPenalty", 1);
     cJSON_AddNumberToObject(root, "sellValue", 0.5);
+    cJSON_AddNumberToObject(root, "saveInterval", 10);
     char *json_str = cJSON_Print(root);
     write(fd, json_str, strlen(json_str));
    
@@ -412,6 +444,7 @@ void loadConfig(Game * game) {
     game->config.maxTimeOfTheDay = cJSON_GetObjectItem(root, "maxTimeOfTheDay")->valueint;
     game->config.teleportPenalty = cJSON_GetObjectItem(root, "teleportPenalty")->valueint;
     game->config.sellValue = cJSON_GetObjectItem(root, "sellValue")->valueint;
+    game->config.saveInterval = cJSON_GetObjectItem(root, "saveInterval")->valueint;
 
     cJSON_Delete(root);
 }

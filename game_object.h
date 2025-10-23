@@ -86,6 +86,7 @@ typedef struct {
     int scenarioWeights[3];
     int maxTimeOfTheDay;
     int teleportPenalty;
+    int saveInterval;
 
     double sellValue;
 } Config;

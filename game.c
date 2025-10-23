@@ -9,6 +9,8 @@
 #include "combat.h"
 #include "fileio.h"
 
+int tickInterval = 0;
+
 void initGame(Game * game) {
 	game->initialized = 1;
 	game->level = 0;
@@ -20,6 +22,7 @@ void initGame(Game * game) {
 	loadMapAndLocationData(game);
 	loadConfig(game);
 	loadShop(game);
+	saveGame(game, 1);
 }
 
 void rest(Game * game) {
@@ -31,7 +34,6 @@ void rest(Game * game) {
 	printf("Your team rested and fully healed!");
 	addTimeOfTheDay(game, 1);
 }
-
 void doTraining(Game * game) {
 	int choice;
 	while (1) {
@@ -121,5 +123,8 @@ void doGameTick(Game * game){
 					printf("Lua chon khong hop le, vui long nhap lai.\n");
 			}
 		}
+		tickInterval = tickInterval % game->config.saveInterval;
+		if (tickInterval == 9) {saveGame(game, 1);}
+		tickInterval++;
 	}
 }
