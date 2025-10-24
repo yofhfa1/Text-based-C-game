@@ -3,27 +3,14 @@
 #include <string.h>
 #include "inventory.h"
 Item *createItemInstance(const Item *templateItem, int qty) {
-Item *it = malloc(sizeof(Item));
+    (void)qty; /* qty not stored on Item in game_object.h; treat each instance as one unit */
+    Item *it = malloc(sizeof(Item));
     if (!it) return NULL;
-    *it = *templateItem; // shallow copy
-    it->qty = qty;
-    it->equipped_by = -1;
+    *it = *templateItem;
     return it;
 }
 void addItemToInventory(Game *game, Item *item) {
     if (!game || !item) return;
-    if (item->type == HEALTH_POTION) {
-        Node *node = game->itemList.head;
-        while (node) {
-            Item *inv = (Item *) node->value;
-            if (inv->type == HEALTH_POTION && strcmp(inv->name, item->name) == 0) {
-                inv->qty += item->qty;
-                free(item);
-                return;
-            }
-            node = node->next;
-        }
-    }
     insert(&(game->itemList), item);
 }
 void openInventoryMenu(Game *game) {
@@ -38,7 +25,7 @@ void openInventoryMenu(Game *game) {
             while (node) {
                 Item *item = (Item *) node->value;
                 if (item->type == HEALTH_POTION) {
-                    printf("%d. %s x%d\n", i, item->name, item->qty);
+                    printf("%d. %s\n", i, item->name);
                 } else {
                     printf("%d. %s\n", i, item->name);
                 }
@@ -66,15 +53,16 @@ void openInventoryMenu(Game *game) {
         printf("Action: ");
         scanf("%d", &action);
         if (action == 1) {
-            if (sel->type == HEALTH_POTION) {
+                if (sel->type == HEALTH_POTION) {
                 for (int i=0;i<3;i++) {
                     if (game->champion[i].maxHealth > 0) {
                         game->champion[i].health += sel->effectValue;
                         if (game->champion[i].health > game->champion[i].maxHealth)
                             game->champion[i].health = game->champion[i].maxHealth;
                         printf("%s used on %s (champion %d). Healed %d.\n", sel->name, "Champion", i+1, sel->effectValue);
-                        sel->qty -= 1;
-                        if (sel->qty <= 0) removeAt(game->itemList, choice-1);
+                        /* remove this item instance from inventory */
+                        Node *rem = removeAt(&(game->itemList), choice-1);
+                        if (rem) { free(rem->value); free(rem); }
                         break;
                     }
                 }
@@ -82,24 +70,19 @@ void openInventoryMenu(Game *game) {
                 printf("Cannot use this item directly. Try equip.\n");
             }
         } else if (action == 2) {
-            if (sel->equipped_by == -1) {
-                for (int i=0;i<3;i++) {
-                    if (game->champion[i].maxHealth > 0) {
-                        sel->equipped_by = i;
-                        game->champion[i].damage += sel->effectValue;
-                        printf("Equipped %s to champion %d\n", sel->name, i+1);
-                        break;
-                    }
+            for (int i=0;i<3;i++) {
+                if (game->champion[i].maxHealth > 0) {
+                    game->champion[i].damage += sel->effectValue;
+                    printf("Equipped %s to champion %d (buff applied)\n", sel->name, i+1);
+                    Node *rem2 = removeAt(&(game->itemList), choice-1);
+                    if (rem2) { free(rem2->value); free(rem2); }
+                    break;
                 }
-            } else {
-                int idx = sel->equipped_by;
-                game->champion[idx].damage -= sel->effectValue;
-                sel->equipped_by = -1;
-                printf("Unequipped %s from champion %d\n", sel->name, idx+1);
             }
         } else if (action == 3) {
             printf("Dropping %s\n", sel->name);
-            removeAt(game->itemList, choice-1);
+            Node *rem3 = removeAt(&(game->itemList), choice-1);
+            if (rem3) { free(rem3->value); free(rem3); }
         } else {
             continue;
         }
@@ -130,7 +113,7 @@ void printInventory(Game *game) {
     if (!n) { printf("(empty)\n"); return; }
     while (n) {
         Item *it = (Item *) n->value;
-        if (it->type == HEALTH_POTION) printf("%d: %s x%d (heal %d)\n", idx, it->name, it->qty, it->effectValue);
+        if (it->type == HEALTH_POTION) printf("%d: %s (heal %d)\n", idx, it->name, it->effectValue);
         else printf("%d: %s (val %d eff %d)\n", idx, it->name, it->value, it->effectValue);
         n = n->next; idx++;
     }
