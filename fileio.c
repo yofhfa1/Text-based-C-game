@@ -36,7 +36,7 @@ void saveGame(Game * game, int autosave) {
         sprintf(temp, "%s%s", SAVE_DIRECTORY, temp);
     } else {
         // There is a bug where it will always override slot 0 first
-        sprintf(temp, "%sautosave_%d.json\n", SAVE_DIRECTORY, current_save);
+        sprintf(temp, "%sautosave_%d.json", SAVE_DIRECTORY, current_save);
         current_save++;
         if (current_save > MAX_AUTOSAVE) {
             current_save = 0;
